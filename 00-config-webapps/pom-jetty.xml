@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>lk.training.spring</groupId>
+		<artifactId>base-config</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../00-config</relativePath>
+	</parent>
+
+	<artifactId>base-config-webapps</artifactId>
+	<packaging>pom</packaging>
+
+	<properties>
+		<jettyVersion>9.4.20.v20190813</jettyVersion>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>3.2.3</version>
+				<configuration>
+					<!-- Don't fail if web.xml is missing -->
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+
+			<!-- To test the webapp run, mvn jetty:run OR mvn jetty:run-war http://eclipse.org/jetty/documentation/current/jetty-maven-plugin.html#deploy-war-running-pre-assembled-war -->
+			<!-- mvn jetty:run-forked might be required to get the jvmArgs recognized. -->
+			<plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>${jettyVersion}</version>
+				<configuration>
+					<!-- "double-hyphen"add-modules java.se.ee -->
+					<jvmArgs>-Duser.timezone=UTC</jvmArgs>
+					<!-- <scanIntervalSeconds>10</scanIntervalSeconds> -->
+					<!-- Hit ENTER to reload the application on the 'mvn jetty:run' console. 
+						if scanIntervalSeconds is not used to auto scan and reload -->
+					<reload>manual</reload>
+					<!-- Scan for the changes in the following resources as well -->
+					<scanTargetPatterns>
+						<scanTargetPattern>
+							<directory>src/main/webapp/WEB-INF/spring</directory>
+							<includes>
+								<include>**/*Context.xml</include>
+								<include>**/*.properties</include>
+							</includes>
+						</scanTargetPattern>
+					</scanTargetPatterns>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${springVersion}</version>
+		</dependency>
+
+		<!-- Servlet API jar is to be added based on App server -->
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
+			<version>${jettyVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+</project>

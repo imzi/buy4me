@@ -1,0 +1,1 @@
+Copy the content of pom-<server>.xml to pom.xml based on the application server you will be using.

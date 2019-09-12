@@ -1,0 +1,2 @@
+Use
+  mvn jetty:run-forked

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>lk.training.spring</groupId>
+		<artifactId>base-config</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../00-config</relativePath>
+	</parent>
+
+	<artifactId>base-config-webapps</artifactId>
+	<packaging>pom</packaging>
+
+	<properties>
+		<tomcatVersion>9.0.24</tomcatVersion>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>3.2.3</version>
+				<configuration>
+					<!-- Don't fail if web.xml is missing -->
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+
+			<!-- Cargo with Tomcat 9 starts here https://codehaus-cargo.github.io/cargo/Maven2+Plugin+Getting+Started.html 
+				https://codehaus-cargo.github.io/cargo/Maven2+Plugin+Reference+Guide.html 
+				https://codehaus-cargo.github.io/cargo/Tomcat+9.x.html -->
+			<plugin>
+				<groupId>org.codehaus.cargo</groupId>
+				<artifactId>cargo-maven2-plugin</artifactId>
+				<version>1.7.7</version>
+				<configuration>
+					<container>
+						<containerId>tomcat9x</containerId>
+						<!-- Download zip and install Tomcat <zipUrlInstaller> <url>http://repo1.maven.org/maven2/org/apache/tomcat/tomcat/${tomcatVersion}/tomcat-${tomcatVersion}.zip</url> 
+							</zipUrlInstaller> -->
+						<!-- Instead of downloading, use an installation already available -->
+						<home>/home/kamal/programs/apache-tomcat-${tomcatVersion}</home>
+						<output>${project.build.directory}/tomcat9x/container.log</output>
+						<!-- If true, then the file specified by <output> will not be erased 
+							across different runs -->
+						<append>false</append>
+						<!-- set this value if your web app is taking some time to start -->
+						<!--timeout>360000</timeout -->
+					</container>
+					<configuration>
+						<type>standalone</type>
+						<home>${project.build.directory}/tomcat9x</home>
+						<properties>
+							<cargo.servlet.port>8080</cargo.servlet.port>
+							<cargo.logging>high</cargo.logging>
+							<cargo.jvmargs>-XX:MaxPermSize=512m -Xms256m -Xmx3072m -Xdebug
+								-Xnoagent
+								-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005
+								-XX:+DisableExplicitGC -Xverify:none -Djava.awt.headless=true</cargo.jvmargs>
+						</properties>
+					</configuration>
+					<deployables>
+						<deployable>
+							<groupId>${project.groupId}</groupId>
+							<artifactId>${project.artifactId}</artifactId>
+							<type>war</type>
+							<properties>
+								<!-- set the context for your web app -->
+								<context>/dev</context>
+							</properties>
+						</deployable>
+					</deployables>
+				</configuration>
+			</plugin>
+			<!-- end of Cargo plugin configuration -->
+		</plugins>
+	</build>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${springVersion}</version>
+		</dependency>
+
+		<!-- Servlet API jar is to be added based on App server -->
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-servlet-api</artifactId>
+			<version>${tomcatVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+</project>
