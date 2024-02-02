@@ -12,7 +12,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Versions of dependencies -->
-		<springVersion>5.1.9.RELEASE</springVersion>
+		<springVersion>5.2.22.RELEASE</springVersion>
 		<aspectjVersion>1.9.0</aspectjVersion>
 
 		<commonsDBCP2Version>2.7.0</commonsDBCP2Version>
